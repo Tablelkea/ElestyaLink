@@ -11,11 +11,15 @@ import org.elestya.plugins.services.SanctionService;
 
 public final class ElestyaLink extends JavaPlugin {
 
+    private static ElestyaLink instance;
+
     private Database database;
     private PlayerSessionService sessionService;
 
     @Override
     public void onEnable() {
+
+        instance = this;
 
         saveDefaultConfig();
         database = new Database();
@@ -51,5 +55,13 @@ public final class ElestyaLink extends JavaPlugin {
         if (database != null) {
             database.close();
         }
+    }
+
+    public static ElestyaLink instance() {
+        return instance;
+    }
+
+    public Database database(){
+        return database;
     }
 }
