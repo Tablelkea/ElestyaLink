@@ -15,6 +15,8 @@ public final class ElestyaLink extends JavaPlugin {
 
     private Database database;
     private PlayerSessionService sessionService;
+    private PlayerService playerService;
+    private SanctionService sanctionService;
 
     @Override
     public void onEnable() {
@@ -32,8 +34,8 @@ public final class ElestyaLink extends JavaPlugin {
                     getConfig().getString("connection.password")
             );
 
-            PlayerService playerService = new PlayerService(database, this);
-            SanctionService sanctionService = new SanctionService(database, this);
+            playerService = new PlayerService(database, this);
+            sanctionService = new SanctionService(database, this);
             sessionService = new PlayerSessionService(database, this);
 
             PluginManager pm = getServer().getPluginManager();
@@ -63,5 +65,17 @@ public final class ElestyaLink extends JavaPlugin {
 
     public Database database(){
         return database;
+    }
+
+    public PlayerSessionService sessionService(){
+        return sessionService;
+    }
+
+    public SanctionService sanctionService(){
+        return sanctionService;
+    }
+
+    public PlayerService playerService(){
+        return playerService;
     }
 }
