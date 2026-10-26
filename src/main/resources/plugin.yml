@@ -1,0 +1,9 @@
+name: ElestyaLink
+version: '${version}'
+
+main: org.elestya.plugins.ElestyaLink
+api-version: '1.21.11'
+load: POSTWORLD
+
+authors: [ TablePasDroite ]
+
