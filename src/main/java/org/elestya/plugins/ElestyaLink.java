@@ -39,7 +39,7 @@ public final class ElestyaLink extends JavaPlugin {
             sessionService = new PlayerSessionService(database, this);
 
             PluginManager pm = getServer().getPluginManager();
-            pm.registerEvents(new PlayerEvents(playerService, sanctionService, this), this);
+            pm.registerEvents(new PlayerEvents(playerService, this), this);
             pm.registerEvents(new PlayerSessionListener(this, sessionService), this);
 
         } catch (Exception e){

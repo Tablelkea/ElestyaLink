@@ -2,7 +2,7 @@ package org.elestya.plugins.services;
 
 public enum SanctionType {
 
-    BAN,
+    TEMPBAN,
     MUTE,
     KICK,
     WARN
