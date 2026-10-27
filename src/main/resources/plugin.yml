@@ -7,3 +7,8 @@ load: POSTWORLD
 
 authors: [ TablePasDroite ]
 
+commands:
+  discordlink:
+    description: Link your Minecraft account to your Discord account
+    usage: /discordlink
+
