@@ -49,7 +49,7 @@ public final class ElestyaLink extends JavaPlugin {
             discordService = new DiscordService(database);
 
             PluginManager pm = getServer().getPluginManager();
-            pm.registerEvents(new PlayerEvents(playerService, this), this);
+            pm.registerEvents(new PlayerEvents(playerService, sanctionService, this), this);
             pm.registerEvents(new PlayerSessionListener(this, sessionService), this);
 
             getCommand("discordlink").setExecutor(new DiscordLinkCommand(database, discordService));

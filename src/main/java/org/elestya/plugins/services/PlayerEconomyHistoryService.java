@@ -1,57 +1,65 @@
-/*package org.elestya.plugins.services;
+package org.elestya.plugins.services;
 
-import fr.elestya.core.ElestyaCore;
 import org.bukkit.entity.Player;
 import org.elestya.plugins.database.Database;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.util.Objects;
 
 public class PlayerEconomyHistoryService {
 
-    private Database database;
+    public static final String DEPOSIT = "deposit";
+    public static final String WITHDRAW = "withdraw";
+
+    private final Database database;
 
     public PlayerEconomyHistoryService(Database database) {
         this.database = database;
-
-        createPlayerStatusTable();
+        createTable();
     }
 
-    private void createPlayerStatusTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS players_economy_history (" +
-                "uuid VARCHAR(36) NOT NULL, " +
-                "amount INTEGER NOT NULL, " +
-                "type VARCHAR(32) NOT NULL, " +
-                "timestamp TIMESTAMP NOT NULL)";
+    private void createTable() {
+        String sql = """
+            CREATE TABLE IF NOT EXISTS players_economy_history (
+                id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                uuid VARCHAR(36) NOT NULL,
+                amount DOUBLE NOT NULL,
+                type VARCHAR(32) NOT NULL,
+                timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                INDEX idx_uuid_timestamp (uuid, timestamp)
+            )""";
 
-        try (Connection c = database.connection(); PreparedStatement st = c.prepareStatement(sql)) {
-            st.executeUpdate();
+        try (Connection c = database.connection(); Statement st = c.createStatement()) {
+            st.executeUpdate(sql);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void updateEconomyHistory(Player player, double amount){
+    /**
+     * Enregistre une transaction.
+     *
+     * @param player le joueur concerné
+     * @param delta  variation du solde : positive = dépôt, négative = retrait
+     */
+    public void recordTransaction(Player player, double delta) {
+        Objects.requireNonNull(player);
 
-        String sql = "INSERT INTO players_economy_history (uuid, amount, type, timestamp) "
-                + "VALUES (?, ?, ?, CURRENT_TIMESTAMP)";
+        if (delta == 0) return;
+
+        String type = delta > 0 ? DEPOSIT : WITHDRAW;
+
+        String sql = "INSERT INTO players_economy_history (uuid, amount, type) VALUES (?, ?, ?)";
 
         try (Connection c = database.connection(); PreparedStatement st = c.prepareStatement(sql)) {
             st.setString(1, player.getUniqueId().toString());
-            double money = new ElestyaCore().getEconomyManager().get(player.getUniqueId());
-            st.setDouble(2, money);
-
-            if(money - amount >= 0){
-                st.setDouble(3, amount);
-                st.setString(4, "withdraw");
-            }else{
-                st.setDouble(3, amount);
-                st.setString(4, "deposit");
-            }
-
+            st.setDouble(2, Math.abs(delta));
+            st.setString(3, type);
             st.executeUpdate();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
-}*/
+}

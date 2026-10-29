@@ -5,6 +5,7 @@ public enum SanctionType {
     TEMPBAN,
     MUTE,
     KICK,
-    WARN
+    WARN,
+    DEBUG
 
 }

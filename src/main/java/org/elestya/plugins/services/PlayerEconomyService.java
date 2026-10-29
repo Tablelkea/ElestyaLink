@@ -1,6 +1,7 @@
 /*package org.elestya.plugins.services;
 
 import fr.elestya.core.ElestyaCore;
+import fr.elestya.core.EconomyManager;
 import org.bukkit.entity.Player;
 import org.elestya.plugins.database.Database;
 
@@ -12,9 +13,11 @@ import java.util.Objects;
 public class PlayerEconomyService {
 
     private Database database;
+    private EconomyManager manager;
 
-    public PlayerEconomyService(Database database) {
+    public PlayerEconomyService(Database database, EconomyManager manager) {
         this.database = database;
+        this.manager = manager;
 
         createPlayerStatusTable();
     }
@@ -36,7 +39,7 @@ public class PlayerEconomyService {
     public void updatePlayerMoney(Player player){
 
         Objects.requireNonNull(player);
-        double amount = new ElestyaCore().getEconomyManager().get(player.getUniqueId());
+        double amount = manager.get(player.getUniqueId());
 
         String sql = "UPDATE players_economy SET money = money + ? WHERE uuid = ?";
 
